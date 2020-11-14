@@ -37,7 +37,6 @@ namespace smartaqua
         ~SensorDallas();
 
         void service() override;
-        int length() override;
         char prefix() override;
     };
 
@@ -62,6 +61,8 @@ namespace smartaqua
         }
 
         sensors = new DeviceAddress[sensor_count];
+
+        initData(sensor_count);
 
         for (int i = 0; i < sensor_count; ++i)
         {
@@ -91,18 +92,11 @@ namespace smartaqua
         {
             float current_temp = manager.getTempC(sensors[i]);
 
-            if (current_temp == INVALID_VALUE)
+            if (current_temp != INVALID_VALUE)
             {
-                current_temp = read(i);
+                setData(i, current_temp);
             }
-
-            setData(i, current_temp);
         }
-    }
-
-    int SensorDallas::length()
-    {
-        return sensor_count;
     }
 
     char SensorDallas::prefix()

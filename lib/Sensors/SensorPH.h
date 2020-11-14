@@ -8,17 +8,21 @@ namespace smartaqua
     class SensorPH : public Sensor
     {
     private:
+        int analogPin;
+        int temperature = 25;
+
     public:
-        SensorPH();
+        SensorPH(int pin);
         ~SensorPH();
 
         void service() override;
-        int length() override;
         char prefix() override;
     };
 
-    SensorPH::SensorPH()
+    SensorPH::SensorPH(int pin) : analogPin(pin)
     {
+        pinMode(analogPin, INPUT);
+        initData(1);
     }
 
     SensorPH::~SensorPH()
@@ -27,12 +31,7 @@ namespace smartaqua
 
     void SensorPH::service()
     {
-
-    }
-
-    int SensorPH::length()
-    {
-        return 1;
+        setData(0, readAsAnalog(analogPin));
     }
 
     char SensorPH::prefix()
