@@ -2,8 +2,8 @@
 
 // GPRS Configs
 
-// #define OPERATOR_VIVO
 #define OPERATOR_ALGAR
+// #define OPERATOR_VIVO
 
 #ifdef OPERATOR_ALGAR
 #define APN_ADDR "voxter.br"
@@ -12,7 +12,7 @@
 #endif
 
 #ifdef OPERATOR_VIVO
-#define APN_ADDR "zap.vivo.com.br"
+#define APN_ADDR "m2track.br"
 #define APN_USER "vivo"
 #define APN_PASS "vivo"
 #endif
@@ -29,3 +29,5 @@
 #define MQTT_USER "a502abb6"
 #define MQTT_PASS "582a6af067460d36"
 #define MQTT_PORT 1883
+
+#define MQTT_DATA_TOPIC "data/topic"
