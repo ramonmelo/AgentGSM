@@ -1,5 +1,4 @@
 #define RECONNECT_DELAY 10000L
-#define UPDATE_DELAY 15 * 1000
 
 #include "config.h"
 #include <Arduino.h>
@@ -13,13 +12,16 @@ private:
 	unsigned long timeout = 0;
 
 	bool mqttConnect();
+
 public:
 	ServiceController(Client &client);
 	~ServiceController();
 
 	void setup();
 	void service();
-	bool sendUpdate(char* data);
+	bool sendUpdate(const char *data);
+	bool sendUpdate(const char* topic, const uint8_t* payload, unsigned int plength);
+	bool isConnected();
 };
 
 ServiceController::ServiceController(Client &client) : mqtt(client)
@@ -39,9 +41,9 @@ void ServiceController::setup()
 
 void ServiceController::service()
 {
-	if (!mqtt.connected())
+	if (mqtt.connected() == false)
 	{
-		Serial.println("=== MQTT NOT CONNECTED ===");
+		Serial.println(CODE_M1);
 		// Reconnect every 10 seconds
 		uint32_t t = millis();
 		if (t - lastReconnectAttempt > RECONNECT_DELAY)
@@ -57,6 +59,11 @@ void ServiceController::service()
 	}
 
 	mqtt.loop();
+}
+
+bool ServiceController::isConnected()
+{
+	return mqtt.connected();
 }
 
 // void mqttCallback(char *topic, byte *payload, unsigned int len)
@@ -77,7 +84,7 @@ void ServiceController::service()
 
 boolean ServiceController::mqttConnect()
 {
-	Serial.print("Connecting to ");
+	Serial.print(STR_CONNECTING);
 	Serial.print(MQTT_BROKER);
 
 	// Connect to MQTT Broker
@@ -85,15 +92,20 @@ boolean ServiceController::mqttConnect()
 
 	if (status == false)
 	{
-		Serial.println(" fail");
+		Serial.println(STR_FAIL);
 		return false;
 	}
-	Serial.println(" success");
+	Serial.println(STR_SUCCESS);
 
 	return mqtt.connected();
 }
 
-bool ServiceController::sendUpdate(char* data)
+bool ServiceController::sendUpdate(const char *data)
 {
 	return mqtt.connected() && mqtt.publish(MQTT_DATA_TOPIC, data);
+}
+
+bool ServiceController::sendUpdate(const char* topic, const uint8_t* payload, unsigned int plength)
+{
+	return mqtt.connected() && mqtt.publish(topic, payload, plength);
 }
