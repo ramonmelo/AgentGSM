@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <limits.h>
 
 #define N_AVERAGE 800
@@ -15,6 +15,7 @@ namespace smartaqua
 
         virtual void service() = 0;
         virtual char prefix() = 0;
+        virtual bool setup() = 0;
 
         float read(int idx);
         void setData(int pin, float data);

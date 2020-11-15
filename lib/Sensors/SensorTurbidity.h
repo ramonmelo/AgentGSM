@@ -12,6 +12,7 @@ namespace smartaqua
     {
     private:
         int analogPin;
+        const char prefix_id = 'b';
 
     public:
         SensorTurbidity(int pin);
@@ -19,17 +20,11 @@ namespace smartaqua
 
         void service() override;
         char prefix() override;
+        bool setup() override;
     };
 
-    SensorTurbidity::SensorTurbidity(int pin) : analogPin(pin)
-    {
-        pinMode(analogPin, INPUT);
-        initData(1);
-    }
-
-    SensorTurbidity::~SensorTurbidity()
-    {
-    }
+    SensorTurbidity::SensorTurbidity(int pin) : analogPin(pin) {}
+    SensorTurbidity::~SensorTurbidity() {}
 
     void SensorTurbidity::service()
     {
@@ -62,7 +57,15 @@ namespace smartaqua
 
     char SensorTurbidity::prefix()
     {
-        return 'b';
+        return this->prefix_id;
+    }
+
+    bool SensorTurbidity::setup()
+    {
+        pinMode(analogPin, INPUT);
+        initData(1);
+
+        return true;
     }
 
 } // namespace smartaqua

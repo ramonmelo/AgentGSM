@@ -9,7 +9,7 @@ namespace smartaqua
     {
     private:
         int analogPin;
-        int temperature = 25;
+        const char prefix_id = 'p';
 
     public:
         SensorPH(int pin);
@@ -17,17 +17,11 @@ namespace smartaqua
 
         void service() override;
         char prefix() override;
+        bool setup() override;
     };
 
-    SensorPH::SensorPH(int pin) : analogPin(pin)
-    {
-        pinMode(analogPin, INPUT);
-        initData(1);
-    }
-
-    SensorPH::~SensorPH()
-    {
-    }
+    SensorPH::SensorPH(int pin) : analogPin(pin) {}
+    SensorPH::~SensorPH() {}
 
     void SensorPH::service()
     {
@@ -36,7 +30,15 @@ namespace smartaqua
 
     char SensorPH::prefix()
     {
-        return 'p';
+        return this->prefix_id;
+    }
+
+    bool SensorPH::setup()
+    {
+        pinMode(analogPin, INPUT);
+        initData(1);
+
+        return true;
     }
 
 } // namespace smartaqua

@@ -6,19 +6,6 @@
 
 #define INVALID_VALUE -127
 
-// function to print a device address
-void printAddress(DeviceAddress deviceAddress)
-{
-    for (uint8_t i = 0; i < 8; i++)
-    {
-        if (deviceAddress[i] < 16)
-        {
-            Serial.print("0");
-        }
-        Serial.print(deviceAddress[i], HEX);
-    }
-}
-
 namespace smartaqua
 {
     class SensorDallas : public Sensor
@@ -28,9 +15,7 @@ namespace smartaqua
         DeviceAddress *sensors;
         int sensor_count;
 
-        int temp_min;
-        int temp_max;
-        bool alert_temp_change;
+        const char prefix_id = 't';
 
     public:
         SensorDallas(OneWire *ow);
@@ -38,51 +23,11 @@ namespace smartaqua
 
         void service() override;
         char prefix() override;
+        bool setup() override;
     };
 
-    SensorDallas::SensorDallas(OneWire *ow) : manager(ow), alert_temp_change(false)
-    {
-        Serial.print("Locating devices...");
-        manager.begin();
-        sensor_count = manager.getDeviceCount();
-
-        Serial.print("Found ");
-        Serial.print(sensor_count, DEC);
-        Serial.println(" devices.");
-
-        Serial.print("Parasite power is: ");
-        if (manager.isParasitePowerMode())
-        {
-            Serial.println("ON");
-        }
-        else
-        {
-            Serial.println("OFF");
-        }
-
-        sensors = new DeviceAddress[sensor_count];
-
-        initData(sensor_count);
-
-        for (int i = 0; i < sensor_count; ++i)
-        {
-            if (manager.getAddress(sensors[i], i))
-            {
-                Serial.println("Found Device");
-                manager.setResolution(sensors[i], 9);
-            }
-            else
-            {
-                Serial.println("Unable to find address for Device");
-            }
-
-            setData(i, 0);
-        }
-    }
-
-    SensorDallas::~SensorDallas()
-    {
-    }
+    SensorDallas::SensorDallas(OneWire *ow) : manager(ow) {}
+    SensorDallas::~SensorDallas() {}
 
     void SensorDallas::service()
     {
@@ -101,7 +46,32 @@ namespace smartaqua
 
     char SensorDallas::prefix()
     {
-        return 't';
+        return this->prefix_id;
+    }
+
+    bool SensorDallas::setup()
+    {
+        manager.begin();
+        sensor_count = manager.getDeviceCount();
+
+        Serial.print("dl ");
+        Serial.println(sensor_count, DEC);
+
+        sensors = new DeviceAddress[sensor_count];
+
+        initData(sensor_count);
+
+        for (int i = 0; i < sensor_count; ++i)
+        {
+            if (manager.getAddress(sensors[i], i))
+            {
+                manager.setResolution(sensors[i], 9);
+            }
+
+            setData(i, 0);
+        }
+
+        return sensor_count > 0;
     }
 
 } // namespace smartaqua
