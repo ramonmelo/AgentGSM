@@ -34,6 +34,14 @@ unsigned const long UPDATE_DELAY = 1000l * 5l;
 int8_t msg_size = 50;
 char* msg;
 
+void setupSensor(smartaqua::Sensor &sensor)
+{
+	if (sensor.setup())
+	{
+		Serial.println(STR_SUCCESS);
+	}
+}
+
 void setup()
 {
 	Serial.begin(115200);
@@ -56,7 +64,18 @@ void setup()
 	}
 
 	nextUpdate = millis();
+
+	setupSensor(sensorDallas);
+	setupSensor(sensorPH);
+	setupSensor(sensorTurbidity);
+
 	msg = new char[msg_size];
+}
+
+void sendData(const char *topic, float data)
+{
+	String dataString(data);
+	service->sendUpdate(topic, dataString.c_str());
 }
 
 void update()
@@ -81,6 +100,11 @@ void loop()
 	if (modem.isConnected())
 	{
 		service->service();
+
+		sensorDallas.service();
+		sensorPH.service();
+		sensorTurbidity.service();
+
 		update();
 	}
 	else
