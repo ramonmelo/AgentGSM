@@ -36,7 +36,6 @@ void ServiceController::setup()
 {
 	// MQTT Broker setup
 	mqtt.setServer(MQTT_BROKER, MQTT_PORT);
-	// mqtt.setCallback(mqttCallback);
 }
 
 void ServiceController::service()
