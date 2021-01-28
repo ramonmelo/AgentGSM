@@ -1,21 +1,21 @@
 #include <Arduino.h>
 #include "config.h"
-#include <ArduinoJson.h>
 #include <ServiceController.h>
 #include <ModemController.h>
+#include <DataController.h>
 
 #include <Sensor.h>
 #include <SensorDallas.h>
 #include <SensorPH.h>
 #include <SensorTurbidity.h>
 
-#define UPLOAD_DELAY 1000 * 5
-#define ONE_WIRE_BUS 10
+#define ONE_WIRE_BUS 5
 #define PIN_SENSOR_PH A1
 #define PIN_SENSOR_TURBIDITY A0
 
 ModemController modem;
 ServiceController *service;
+DataController dataController;
 
 OneWire oneWire(ONE_WIRE_BUS);
 
@@ -28,11 +28,11 @@ void (*resetFunc)(void) = 0;
 
 // Timer
 unsigned long nextUpdate;
+unsigned const long UPDATE_DELAY = 1000l * 5l;
 
 // Json
-const char* KEY_D = "d";
-const char* KEY_S = "s";
-uint8_t msg[50];
+int8_t msg_size = 50;
+char* msg;
 
 void setup()
 {
@@ -56,28 +56,23 @@ void setup()
 	}
 
 	nextUpdate = millis();
+	msg = new char[msg_size];
 }
 
 void update()
 {
 	if (service->isConnected() && nextUpdate < millis())
 	{
-		const size_t capacity = JSON_ARRAY_SIZE(4) + JSON_OBJECT_SIZE(2);
+		dataController.setData(
+			sensorDallas.read(0),
+			sensorPH.read(0),
+			sensorTurbidity.read(0));
 
-		DynamicJsonDocument doc(capacity);
+		dataController.BuildInfo(msg, msg_size);
 
-		JsonArray d = doc.createNestedArray(KEY_D);
-		d.add(1000);
-		d.add(2000);
-		d.add(3000);
-		d.add(4000);
-		doc[KEY_S] = 1351824120;
+		service->sendUpdate(MQTT_DATA_TOPIC, msg);
 
-		unsigned int total = serializeJson(doc, msg);
-
-		service->sendUpdate(MQTT_DATA_TOPIC, msg, total);
-
-		nextUpdate = millis() + UPLOAD_DELAY;
+		nextUpdate = millis() + UPDATE_DELAY;
 	}
 }
 
