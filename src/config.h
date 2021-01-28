@@ -19,19 +19,13 @@ const char *APN_PASS("vivo");
 
 // MQTT
 
-// #define MQTT_BROKER "platform.canionlabs.io"
-// #define MQTT_ID "68684b80-0102-11eb-9d20-b7806517d2d9"
-// #define MQTT_USER "lCvi5DEwExRZpURQckh8"
-// #define MQTT_PORT 1883
-
-const char *MQTT_BROKER("smartacqua.cloud.shiftr.io");
-const char *MQTT_ID("acqua001");
-const char *MQTT_USER("smartacqua");
-const char *MQTT_PASS("jO8zkKzCLktGQfT0");
+const char *MQTT_BROKER("");
+const char *MQTT_ID("");
+const char *MQTT_USER("");
+const char *MQTT_PASS("");
 const int MQTT_PORT = 1883;
 
-const char *MQTT_DATA_TOPIC("dt/topic");
-const char *MQTT_DATA_TOPIC_TEMPERATURE("dt/tp"); // data/temperature
+const char *MQTT_DATA_TOPIC("v1/devices/me/telemetry");
 
 // Text Area
 
