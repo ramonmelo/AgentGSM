@@ -19,7 +19,7 @@ public:
 
 	void setup();
 	void service();
-	bool sendUpdate(const char *data);
+	bool sendUpdate(const char* topic, const char *data);
 	bool sendUpdate(const char* topic, const uint8_t* payload, unsigned int plength);
 	bool isConnected();
 };
@@ -100,9 +100,9 @@ boolean ServiceController::mqttConnect()
 	return mqtt.connected();
 }
 
-bool ServiceController::sendUpdate(const char *data)
+bool ServiceController::sendUpdate(const char* topic, const char *data)
 {
-	return mqtt.connected() && mqtt.publish(MQTT_DATA_TOPIC, data);
+	return mqtt.connected() && mqtt.publish(topic, data);
 }
 
 bool ServiceController::sendUpdate(const char* topic, const uint8_t* payload, unsigned int plength)

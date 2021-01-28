@@ -4,10 +4,8 @@
 #define TINY_GSM_USE_GPRS
 
 #define SerialMon Serial
-#define TINY_GSM_DEBUG SerialMon
 
 #define GSM_AUTOBAUD 9600
-// #define GSM_PIN ""
 
 #include "config.h"
 #include <Arduino.h>
@@ -36,13 +34,9 @@ public:
 	// void printInfo();
 };
 
-ModemController::ModemController() : SerialAT(3, 2), modem(SerialAT), client(modem)
-{
-}
+ModemController::ModemController() : SerialAT(2, 3), modem(SerialAT), client(modem) {}
 
-ModemController::~ModemController()
-{
-}
+ModemController::~ModemController() {}
 
 Client &ModemController::getClient()
 {
