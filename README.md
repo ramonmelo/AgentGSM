@@ -67,3 +67,59 @@ msg.NTU = NTU;
 
 return {msg: msg, metadata: metadata, msgType: msgType};
 ```
+## PH Sensor by Elecrow
+
+//Sensor pH com conversor da Elecrow que vem sem Trimpot
+
+#define Vref 4.95 //Tensão Média de saída do conversor para a probe (sensor).Essa tensão Média foi informada pela vendedora do produto www.elecrow.com
+unsigned long int avgValue;     //Armazena o valor médio dos valores lidps pelo sensor
+int i=0;
+void setup()
+{
+    Serial.begin(9600);
+    pinMode(A0, INPUT);
+    pinMode(A1, OUTPUT);        //Não utilizado
+}
+void loop()
+{
+    float sensorValue;
+    int m;                      //Não utilizado
+    long sensorSum;             //Não utilizado
+    int buf[10];                //buffer para a leitura da entrada analógica
+  for(int i = 0; i < 10; i++)       //Obtem 10 valores da leitura analógica (Amostra) do sensor para suavizar o valor 
+  { 
+    buf[i] = analogRead(A0);//Conecte o sensor no pino analógico A0
+    delay(10);
+  }
+  for(int i = 0; i < 9; i++)        //Classifica os valores lidos do menor para o maior
+  {
+    for(int j = i + 1; j < 10; j++)
+    {
+      if(buf[i] > buf[j])
+      {
+        int temp = buf[i];
+        buf[i] = buf[j];
+        buf[j] = temp;
+      }
+    }
+  }
+       avgValue=0;
+ 
+      for(int i=2;i<8;i++)       //Colhe os valores de 6 amostras centrais. Começa da amostra na posição 2(Terceiro valor lido) até a amostra da posição 8(Sétimo valor lido)
+      avgValue+=buf[i];          //Soma os valores das 6 amostras centrais colhidas e atribui essa soma à variável avgValue
+    
+     sensorValue =   avgValue/6; //Calcula a média dessas 6 amostras centrais e atribui à variável sensorValue. Aqui é fornecida a Tensão Média lida pelo sensor em bytes
+     
+    Serial.print("Leitura Média: ");
+    
+    Serial.println(sensorValue); //Imprime a Tensão Média lida pelo Sensor em bytes
+    Serial.println(" ");
+    Serial.print("pH: ");
+    Serial.print(7-1000*(sensorValue-391)*Vref/59.16/1023,2);// 7 é o valor de referência baseando-se numa solução de pH = 7. SensorValue é a leitura média da Tensão lida em bytes.
+    //391 é a Queda de Tensão quando colocamos a entrada do conversor em curto. Esse procedimento deve ser repetido para todo novo sensor a ser calibrado. O valor fornecido inicialmente pela fabricante é 365
+    //Vref é a tensão de saída referência do conversor para o sensor. Foi fornecida pelo Fabricante a Tensão Referência de 4.95 volts.
+    //59.16 é uma constante que ainda não entendi de onde foi tirada, mas que é essencial para o cálculo do pH.
+    Serial.println(" ");
+    delay(1000);
+
+}
