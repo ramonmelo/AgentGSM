@@ -69,7 +69,7 @@ return {msg: msg, metadata: metadata, msgType: msgType};
 ```
 ## PH Sensor by Elecrow
 ```
-{c:red}[//Sensor pH com conversor da Elecrow que vem sem Trimpot]{/c}
+//Sensor pH com conversor da Elecrow que vem sem Trimpot
 
 #define Vref 4.95 //Tensão Média de saída do conversor para a probe (sensor).Essa tensão Média foi informada pela vendedora do produto www.elecrow.com
 
@@ -79,7 +79,7 @@ int i = 0;
 
 void setup()
 {
-    Serial.begin(9600);       
+    {c:orange}Serial.begin{/c}(9600);       
     
     pinMode(A0, INPUT);       
     
