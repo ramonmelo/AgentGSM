@@ -70,7 +70,7 @@ return {msg: msg, metadata: metadata, msgType: msgType};
 ## PH Sensor by Elecrow
 
 //Sensor pH com conversor da Elecrow que vem sem Trimpot
-
+```
 #define Vref 4.95 //Tensão Média de saída do conversor para a probe (sensor).Essa tensão Média foi informada pela vendedora do produto www.elecrow.com
 
 unsigned long int avgValue;     //Armazena o valor médio dos valores lidps pelo sensor
@@ -145,3 +145,4 @@ void loop()
     
     delay(1000);
 }
+```
