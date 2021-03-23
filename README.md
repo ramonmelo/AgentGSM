@@ -79,7 +79,7 @@ int i = 0;
 
 void setup()
 {
-    {c:orange}Serial.begin{/c}(9600);       
+    Serial.begin(9600);       
     
     pinMode(A0, INPUT);       
     
