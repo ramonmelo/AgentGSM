@@ -3,18 +3,11 @@
 // GPRS Configs
 
 #define OPERATOR_ALGAR
-// #define OPERATOR_VIVO
 
 #ifdef OPERATOR_ALGAR
 const char *APN_ADDR("voxter.br");
 const char *APN_USER("algar");
 const char *APN_PASS("algar#");
-#endif
-
-#ifdef OPERATOR_VIVO
-const char *APN_ADDR("m2track.br");
-const char *APN_USER("vivo");
-const char *APN_PASS("vivo");
 #endif
 
 // MQTT
