@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include <limits.h>
 
-#define N_AVERAGE 800
+#define N_AVERAGE 10
 
 namespace smartaqua
 {
@@ -75,10 +75,12 @@ namespace smartaqua
 
         for (size_t i = 0; i < N_AVERAGE; i++)
         {
-            reading += ((float)analogRead(pin) / 1023);
+            reading += analogRead(pin);
+
+            delay(10);
         }
 
-        reading = (reading / N_AVERAGE) * 5000;
+        reading = (reading / N_AVERAGE);
 
         return reading;
     }

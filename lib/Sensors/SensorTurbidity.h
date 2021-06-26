@@ -4,8 +4,6 @@
 #include <Sensor.h>
 #include <math.h>
 
-#define N_AVERAGE 800
-
 namespace smartaqua
 {
     class SensorTurbidity : public Sensor
