@@ -32,7 +32,7 @@ unsigned const long UPDATE_DELAY = 1000l * 5l;
 
 // Json
 int8_t msg_size = 50;
-char* msg;
+char *msg;
 
 void setupSensor(smartaqua::Sensor &sensor)
 {
@@ -83,9 +83,9 @@ void update()
 	if (service->isConnected() && nextUpdate < millis())
 	{
 		dataController.setData(
-			sensorDallas.read(0),
-			sensorPH.read(0),
-			sensorTurbidity.read(0));
+				sensorDallas.read(0),
+				sensorPH.read(0),
+				sensorTurbidity.read(0));
 
 		dataController.BuildInfo(msg, msg_size);
 
