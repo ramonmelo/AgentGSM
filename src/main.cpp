@@ -28,7 +28,7 @@ void (*resetFunc)(void) = 0;
 
 // Timer
 unsigned long nextUpdate;
-unsigned const long UPDATE_DELAY = 1000l * 5l;
+unsigned const long UPDATE_DELAY = 1000l * 60l;
 
 // Json
 int8_t msg_size = 50;
@@ -109,10 +109,8 @@ void update()
 
 void loop()
 {
-	if (modem.isConnected())
+	if (modem.isConnected() && service->service())
 	{
-		service->service();
-
 		sensorDallas.service();
 		sensorPH.service();
 		sensorTurbidity.service();

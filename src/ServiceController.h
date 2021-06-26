@@ -10,6 +10,7 @@ private:
 	PubSubClient mqtt;
 	unsigned long lastReconnectAttempt = 0;
 	unsigned long timeout = 0;
+	unsigned int reconnectAttempts = 10;
 
 	bool mqttConnect();
 
@@ -18,7 +19,7 @@ public:
 	~ServiceController();
 
 	void setup();
-	void service();
+	boolean service();
 	bool sendUpdate(const char* topic, const char *data);
 	bool sendUpdate(const char* topic, const uint8_t* payload, unsigned int plength);
 	bool isConnected();
@@ -38,7 +39,7 @@ void ServiceController::setup()
 	mqtt.setServer(MQTT_BROKER, MQTT_PORT);
 }
 
-void ServiceController::service()
+boolean ServiceController::service()
 {
 	if (mqtt.connected() == false)
 	{
@@ -53,11 +54,23 @@ void ServiceController::service()
 				lastReconnectAttempt = 0;
 			}
 		}
+
+		// at every attempts
+		reconnectAttempts--;
+
+		if (reconnectAttempts <= 0) {
+			return false;
+		}
+
 		delay(100);
-		return;
+		return true;
 	}
 
+	// Reset attempts
+	reconnectAttempts = 10;
+
 	mqtt.loop();
+	return true;
 }
 
 bool ServiceController::isConnected()
