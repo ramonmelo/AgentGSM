@@ -44,6 +44,20 @@ msg.PH = ph;
 return {msg: msg, metadata: metadata, msgType: msgType};
 ```
 
+```js
+// V2
+
+var v_ref = 4.95;
+var raw_p = parseInt(msg.p);
+var calibration = parseInt(metadata.ss_ph_calibration);
+
+var result = 7 - 1000 * (raw_p - calibration) * v_ref / 59.16 / 1023;
+
+msg.PH = parseInt(result);
+
+return {msg: msg, metadata: metadata, msgType: msgType};
+```
+
 ## Turbidity Convertion COde
 
 ```js
@@ -67,8 +81,10 @@ msg.NTU = NTU;
 
 return {msg: msg, metadata: metadata, msgType: msgType};
 ```
+
 ## PH Sensor by Elecrow
-```
+
+```cpp
 //Sensor pH com conversor da Elecrow que vem sem Trimpot
 
 #define Vref 4.95 //Tensão Média de saída do conversor para a probe (sensor).Essa tensão Média foi informada pela vendedora do produto www.elecrow.com
