@@ -48,20 +48,32 @@ void setup()
 	delay(10);
 
 	pinMode(LED_BUILTIN, OUTPUT);
-	digitalWrite(LED_BUILTIN, LOW);
+	digitalWrite(LED_BUILTIN, HIGH);
 
-	if (modem.setup())
+	int attempts = 10;
+
+	while (attempts > 0)
 	{
-		service = new ServiceController(modem.getClient());
-		service->setup();
+		Serial.println(attempts);
+		attempts--;
+
+		if (modem.setup())
+		{
+			service = new ServiceController(modem.getClient());
+			service->setup();
+
+			break;
+		}
 	}
-	else
-	{
-		Serial.println(STR_FAIL);
-		delay(10000);
 
+	if (modem.isConnected() == false)
+	{
+		Serial.println(STR_RESET);
+		delay(1000);
 		resetFunc();
 	}
+
+	digitalWrite(LED_BUILTIN, LOW);
 
 	nextUpdate = millis();
 

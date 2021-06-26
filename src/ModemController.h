@@ -1,7 +1,6 @@
 #define TINY_GSM_MODEM_SIM800
 #define TINY_GSM_LOCATION
 #define TINY_GSM_TIME
-#define TINY_GSM_USE_GPRS
 
 #define SerialMon Serial
 #define GSM_AUTOBAUD 9600
@@ -44,48 +43,31 @@ bool ModemController::setup()
 	SerialAT.begin(GSM_AUTOBAUD);
 	delay(6000);
 
+	// Init Modem
 	SerialMon.println(STR_INIT);
-
 	if (modem.init())
 	{
-		SerialMon.println(STR_SUCCESS);
-	}
-	else
-	{
-		return false;
+		String modemInfo = modem.getModemInfo();
+		SerialMon.print("Info: ");
+		SerialMon.println(modemInfo);
+
+		// Connect to Mobile Network
+		SerialMon.println(STR_NETWORK);
+		if (modem.waitForNetwork() && modem.isNetworkConnected())
+		{
+			// Connect to GPRS
+			SerialMon.print(STR_CONNECTING);
+			SerialMon.println(APN_ADDR);
+			if (modem.gprsConnect(APN_ADDR, APN_USER, APN_PASS) && modem.isGprsConnected())
+			{
+				SerialMon.println(modem.getOperator());
+				return true;
+			}
+		}
 	}
 
-	SerialMon.print(STR_NETWORK);
-	if (modem.waitForNetwork() == false)
-	{
-		SerialMon.println(STR_FAIL);
-		return false;
-	}
-
-#ifdef DEBUG
-	if (modem.isNetworkConnected())
-	{
-		SerialMon.println(STR_SUCCESS);
-	}
-#endif
-
-#ifdef TINY_GSM_USE_GPRS
-	// GPRS connection parameters are usually set after network registration
-	SerialMon.print(STR_CONNECTING);
-	SerialMon.print(APN_ADDR);
-	if (!modem.gprsConnect(APN_ADDR, APN_USER, APN_PASS))
-	{
-		SerialMon.println(STR_FAIL);
-		return false;
-	}
-
-	if (modem.isGprsConnected())
-	{
-		SerialMon.println(STR_SUCCESS);
-	}
-#endif
-
-	return true;
+	SerialMon.println(STR_FAIL);
+	return false;
 }
 
 bool ModemController::isConnected()
