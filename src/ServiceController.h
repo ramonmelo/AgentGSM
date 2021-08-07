@@ -18,7 +18,6 @@ public:
 	ServiceController(Client &client);
 	~ServiceController();
 
-	void setup();
 	boolean service();
 	bool sendUpdate(const char* topic, const char *data);
 	bool sendUpdate(const char* topic, const uint8_t* payload, unsigned int plength);
@@ -27,16 +26,11 @@ public:
 
 ServiceController::ServiceController(Client &client) : mqtt(client)
 {
+	mqtt.setServer(MQTT_BROKER, MQTT_PORT);
 }
 
 ServiceController::~ServiceController()
 {
-}
-
-void ServiceController::setup()
-{
-	// MQTT Broker setup
-	mqtt.setServer(MQTT_BROKER, MQTT_PORT);
 }
 
 boolean ServiceController::service()
