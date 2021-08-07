@@ -21,6 +21,7 @@ public:
 	ModemController();
 	~ModemController();
 
+	void shutdown();
 	bool checkTime(int &year, int &month, int &day, int &hour, int &min, int &sec, float &timezone);
 
 	bool isConnected();
@@ -32,6 +33,13 @@ public:
 ModemController::ModemController() : SerialAT(2, 3), modem(SerialAT), client(modem) {}
 
 ModemController::~ModemController() {}
+
+void ModemController::shutdown()
+{
+	modem.gprsDisconnect();
+	delay(5000L);
+	modem.poweroff();
+}
 
 Client &ModemController::getClient()
 {
