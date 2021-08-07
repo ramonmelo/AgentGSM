@@ -16,7 +16,7 @@ namespace smartaqua
         SensorTurbidity(int pin);
         ~SensorTurbidity();
 
-        void service() override;
+        bool service() override;
         char prefix() override;
         bool setup() override;
     };
@@ -24,9 +24,11 @@ namespace smartaqua
     SensorTurbidity::SensorTurbidity(int pin) : analogPin(pin) {}
     SensorTurbidity::~SensorTurbidity() {}
 
-    void SensorTurbidity::service()
+    bool SensorTurbidity::service()
     {
         setData(0, readAsAnalog(analogPin));
+
+        return true;
     }
 
     char SensorTurbidity::prefix()

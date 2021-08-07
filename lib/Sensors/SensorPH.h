@@ -15,7 +15,7 @@ namespace smartaqua
         SensorPH(int pin);
         ~SensorPH();
 
-        void service() override;
+        bool service() override;
         char prefix() override;
         bool setup() override;
     };
@@ -23,9 +23,11 @@ namespace smartaqua
     SensorPH::SensorPH(int pin) : analogPin(pin) {}
     SensorPH::~SensorPH() {}
 
-    void SensorPH::service()
+    bool SensorPH::service()
     {
         setData(0, readAsAnalog(analogPin));
+
+        return true;
     }
 
     char SensorPH::prefix()

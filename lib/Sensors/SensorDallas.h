@@ -21,7 +21,7 @@ namespace smartaqua
         SensorDallas(OneWire *ow);
         ~SensorDallas();
 
-        void service() override;
+        bool service() override;
         char prefix() override;
         bool setup() override;
     };
@@ -29,9 +29,11 @@ namespace smartaqua
     SensorDallas::SensorDallas(OneWire *ow) : manager(ow) {}
     SensorDallas::~SensorDallas() {}
 
-    void SensorDallas::service()
+    bool SensorDallas::service()
     {
         manager.requestTemperatures();
+
+        bool result = true;
 
         for (int i = 0; i < sensor_count; ++i)
         {
@@ -42,6 +44,8 @@ namespace smartaqua
                 setData(i, current_temp);
             }
         }
+
+        return result;
     }
 
     char SensorDallas::prefix()

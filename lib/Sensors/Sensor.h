@@ -13,7 +13,7 @@ namespace smartaqua
         Sensor();
         ~Sensor();
 
-        virtual void service() = 0;
+        virtual bool service() = 0;
         virtual char prefix() = 0;
         virtual bool setup() = 0;
 
